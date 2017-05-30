@@ -1,0 +1,5 @@
+main: guildcraftCommandScheduler.main.Main
+name: guildcraftCommandScheduler
+version: 0.1
+author: Jonodonozym
+description: A plugin that checks an online database for minecraft server commands and executes them at a regular interval

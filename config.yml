@@ -1,0 +1,7 @@
+database: pascaja182_store
+host: 10.3.1.215
+username: pascaj128_store
+password: Jonodonozym
+table: pending_commands
+interval: 15
+server: survival
