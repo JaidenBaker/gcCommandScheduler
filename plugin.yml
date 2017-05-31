@@ -1,17 +1,17 @@
-main: guildcraftCommandScheduler.main.Main
-name: guildcraftCommandScheduler
-version: 0.1
+main: guildcraftCommandScheduler.main.GCCSMain
+name: GCCommandSheduler
+version: 1.0
 author: Jonodonozym
 description: A plugin that checks an online database for minecraft server commands and executes them at a regular interval
 
 commands:
   gccs:
     description: Commands for the GuildCraft Command Scheduler
-    usage: | 
-      /gccs about  - Displays information about the plugin
-      /gccs reload - Reloads changes made to the config and blacklist files
-      /gccs update - Immediatley executes all pending commands
-      /gccs test   - Test to make sure everything is working
+    usage: |
+      /gccs about - Gives information about the plugin
+      /gccs reload - Reloads changes made to the config
+      /gccs update - Immediatley runs all pending commands
+      /gccs test - Test to make sure everything is working
     gccs reload:
       aliases: [gccs r,gccs reloadconfig,gccs reloadblacklist]
       permission: gccs.access
@@ -21,6 +21,8 @@ commands:
       permission: gccs.access
       permission-message: You don't have the permissions to do that!
     gccs test:
+      description: Run tests the plugin and server for errors
+      usage: /gccs test
       aliases: [gccs t]
       permission: gccs.access
       permission-message: You don't have the permissions to do that!

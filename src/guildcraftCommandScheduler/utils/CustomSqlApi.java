@@ -8,7 +8,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.Executors;
 import java.util.logging.Logger;
+
+import guildcraftCommandScheduler.main.GCCSMain;
 
 
 /**
@@ -17,51 +20,54 @@ import java.util.logging.Logger;
  */
 public class CustomSqlApi {
 
-	private static final long retryInterval = 5L;
+	private static final long retryIntervalMilliseconds = 10000;
 	private static final int maxFails = 3;
 	private static final String driver = "com.mysql.jdbc.Driver";
 	private static int numFails = 0;
 	
 	/**
-	 * Opens a new connection to a specified database
-	 * @param logger
-	 * @param host
-	 * @param databaseName
-	 * @param username
-	 * @param password
+	 * Opens a new connection to a specified SQL database
+	 * If it fails 3 times, writes the error to a log file in the plugin's directory
+	 * @param logger the logger to record success / fail messages to
 	 * @return the opened connection, or null if one couldn't be created
 	 */
 	public static Connection open(Logger logger, String host, int port, String databaseName, String username, String password){
-		// connecting to database server, with at most 3 failed attempts every 10 seconds before it gives up
 		numFails = 0;
 		while (numFails <= maxFails){
+			
+			
 			try {
-				try {
-					Class.forName(driver).newInstance();
-				} catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
+				try { Class.forName(driver).newInstance(); }
+				catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) { e.printStackTrace(); }
+				
 				String url = "jdbc:mysql://"+host+":"+port+"/"+databaseName;
-				logger.info("Attempting to connect to "+url);
-				Connection c = DriverManager.getConnection(url,username,password);
-				logger.info("Successfully connected to the "+databaseName+" database at "+host);
-				return c;
+				
+				logger.info("Attempting to connect to the SQL server at the host "+host);
+				Connection connection = DriverManager.getConnection(url,username,password);
+				connection.setNetworkTimeout(Executors.newFixedThreadPool(2), 5000);
+				logger.info("Successfully connected to the "+databaseName+" database at the host "+host);
+				
+				return connection;
 			}
+			
+			
 			catch (SQLException e) {
 				numFails++;
-				logger.info("Failed to connect to the database: ");
-				e.printStackTrace();
+				logger.info("Failed to connect to the database");
 				if (numFails <= maxFails){
-					logger.info("Attempting to reconnect in "+retryInterval
+					logger.info("Attempting to reconnect in "+(retryIntervalMilliseconds/1000L)
 							+ " seconds... (attempt "+numFails+" of "+maxFails+")");
-					try { Thread.sleep(retryInterval*1000L); }
+					try { Thread.sleep(retryIntervalMilliseconds); }
 					catch (InterruptedException e1) { e1.printStackTrace(); }
 				}
-				else
-					logger.info("Failed to connect "+maxFails+" times. Referr to the previous error messages"
-							+ " or contact the database host / plugin developer to help resolve the issue.");
+				else{
+					GCCSMain.writeErrorLogFile(e);
+					logger.info("Failed to connect "+maxFails+" times. Referr to the error log file in the plugin's directory"
+							+ " and contact the database host / plugin developer to help resolve the issue.");
+				}
 			}
+			
+			
 		}
 		return null;
 	}
@@ -72,13 +78,8 @@ public class CustomSqlApi {
 	 */
 	public static boolean close(Connection connection){
 		if (connection != null){
-			try {
-				connection.close();
-				connection = null;
-				return true;
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
+			try { connection.close(); return true; }
+			catch (SQLException e) { e.printStackTrace(); }
 		}
 		return false;
 	}
@@ -96,12 +97,11 @@ public class CustomSqlApi {
 	    try {
 	        stmt = connection.createStatement();
 	        ResultSet rs = stmt.executeQuery(query);
-	        while (rs.next()) {
+	        while (rs.next())
 	        	maxID = rs.getInt("id");
-	        }
-	    } catch (SQLException e ) {
-	        e.printStackTrace();
-	    } finally {
+	    }
+	    catch (SQLException e ) { e.printStackTrace(); }
+	    finally {
 	        if (stmt != null) {
 	        	try { stmt.close(); }
 	        	catch (SQLException e) { e.printStackTrace(); }
@@ -111,18 +111,15 @@ public class CustomSqlApi {
 	}
 	
 	/**
-	 * Returns the ID and command of all pending rows between two ID's (inclusive)
+	 * Returns the ID and command of all pending rows
 	 * @param connection
 	 * @param table
 	 * @param server
-	 * @param startID
-	 * @param endID
 	 * @return A list of the rows, where a row is [id,command,username]
 	 */
-	public static List<String[]> fetchPendingRowsBetween(Connection connection, String table, String server, int startID, int endID){
+	public static List<String[]> fetchPendingRows(Connection connection, String table, String server){
 	    String query = "SELECT * FROM "+table+" "
-	    		+ "WHERE id BETWEEN "+startID+" AND "+endID+" "
-	    		+ "AND status = 'pending' "
+	    		+ "WHERE status = 'pending' "
 	    		+ "AND which_server = '"+server+"';";
 	    return fetchRows(connection, query);
 	}
@@ -145,11 +142,12 @@ public class CustomSqlApi {
 	/**
 	 * Adds a new command to the table
 	 */
-	public static void addCommand(Connection connection, String table, String command, String server, boolean isPending){
-	    String update = "INSERT INTO "+table+" (id, to_execute, player_username, which_server, timestamp_created, status)"
+	public static void addCommand(Connection connection, String table, String command, String server, String sender, boolean isPending){
+	    String update = "INSERT INTO "+table
+	    		+ " (id, to_execute, player_username, which_server, timestamp_created, status)"
 	    		+ " VALUES (" + (getMaxID(connection, table)+1) + ", "
 				+ "'"+command + "', "
-				+ "'GCCS plugin', "
+				+ "'"+sender + "', "
 				+ "'"+server + "', "
 				+ "CURRENT_TIMESTAMP, "
 				+ (isPending ? "'pending'":"'executed'")
@@ -199,9 +197,10 @@ public class CustomSqlApi {
 	        stmt = connection.createStatement();
 	        ResultSet rs = stmt.executeQuery(query);
 	        while (rs.next()) {
-	        	String[] row = new String[2];
+	        	String[] row = new String[3];
 	        	row[0] = rs.getInt("id")+"";
 	        	row[1] = rs.getString("to_execute");
+	        	row[2] = rs.getString("player_username");
 	        	rows.add(row);
 	        }
 	    } catch (SQLException e ) {
@@ -215,6 +214,12 @@ public class CustomSqlApi {
 	    return rows;
 	}
 	
+	/**
+	 * Checks to see if the database has a table
+	 * @param connection
+	 * @param Table
+	 * @return
+	 */
 	public static boolean hasTable(Connection connection, String Table){
 		boolean returnValue = false;
 		String query = "SHOW TABLES LIKE '"+Table+"';";
@@ -236,6 +241,12 @@ public class CustomSqlApi {
 	    return returnValue;
 	}
 	
+	/**
+	 * Checks that the specified table has the columns that the plugin requires
+	 * @param connection
+	 * @param table
+	 * @return
+	 */
 	public static boolean checkColumns(Connection connection, String table){
 		boolean returnValue = true;
 		Statement stmt = null;
@@ -267,18 +278,18 @@ public class CustomSqlApi {
 	}
 	
 	/**
-	 * Executes an update
+	 * Executes a database update
 	 * @param connection
-	 * @param update
+	 * @param update 
 	 */
 	private static void executeUpdate(Connection connection, String update){
 		Statement stmt = null;
 	    try {
 	        stmt = connection.createStatement();
 	        stmt.executeUpdate(update);
-	    } catch (SQLException e ) {
-	        e.printStackTrace();
-	    } finally {
+	    }
+	    catch (SQLException e ) { e.printStackTrace(); }
+	    finally {
 	        if (stmt != null) {
 	        	try { stmt.close(); }
 	        	catch (SQLException e) { e.printStackTrace(); }
