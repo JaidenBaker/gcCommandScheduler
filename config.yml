@@ -1,7 +1,8 @@
-database: pascaja182_store
-host: 10.3.1.215
-username: pascaj128_store
-password: Jonodonozym
+database: sql12177447
+host: sql12.freemysqlhosting.net
+username: sql12177447
+password: dRtlPdjlei
 table: pending_commands
 interval: 15
 server: survival
+port: 3306

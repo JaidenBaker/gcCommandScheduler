@@ -6,6 +6,7 @@
             <fileset dir="bin"></fileset>
             <fileset file="plugin.yml"></fileset>
             <fileset file="config.yml"></fileset>
+            <fileset file="commandBlacklist.txt"></fileset>
         </jar>
     </target>
 </project>
