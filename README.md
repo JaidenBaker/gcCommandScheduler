@@ -2,9 +2,7 @@
 Spiggot plugin that runs scheduled commands from an online database
 
 ## How to use ##
-Grab the .jar file from the builds folder and drop it into your server's plugins folder and run the server once to create the config.yml and commandBlacklist.txt files.
+Copy the contents of the builds folder and drop it into your server's plugins folder.
+Make sure you edit the SQL database's config in the config.yml file, otherwise the plugin won't work!
 
-Edit the SQL database's config in the config.yml file.
-
-## To-do list ##
-* Review code and create javadoc to enhance readability
+Want to block certain commands form being run from the server? add the command to the commandBlacklist.txt file
