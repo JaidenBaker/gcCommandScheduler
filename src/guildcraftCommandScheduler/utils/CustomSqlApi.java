@@ -21,7 +21,6 @@ import guildcraftCommandScheduler.main.GCCSMain;
  */
 public class CustomSqlApi {
 
-	private static final long retryIntervalMilliseconds = 10000;
 	private static final int maxFails = 3;
 	private static final String driver = "com.mysql.jdbc.Driver";
 	private static int numFails = 0;
@@ -34,6 +33,7 @@ public class CustomSqlApi {
 	 */
 	public static Connection open(Logger logger, String host, int port, String databaseName, String username, String password){
 		numFails = 0;
+		
 		while (numFails <= maxFails){
 			
 			
@@ -55,15 +55,11 @@ public class CustomSqlApi {
 			catch (SQLException e) {
 				numFails++;
 				logger.info("Failed to connect to the database");
-				if (numFails <= maxFails){
-					logger.info("Attempting to reconnect in "+(retryIntervalMilliseconds/1000L)
-							+ " seconds... (attempt "+numFails+" of "+maxFails+")");
-					try { Thread.sleep(retryIntervalMilliseconds); }
-					catch (InterruptedException e1) { e1.printStackTrace(); }
-				}
+				if (numFails < maxFails)
+					logger.info("Attempting to reconnect... (attempt "+(numFails+1)+" of "+(maxFails)+")");
 				else{
 					GCCSMain.writeErrorLogFile(e);
-					logger.info("Failed to connect "+maxFails+" times. Referr to the error log file in the plugin's directory"
+					logger.info("Failed to connect "+maxFails+" times. Refer to the error log file in the plugin's directory"
 							+ " and contact the database host / plugin developer to help resolve the issue.");
 				}
 			}
@@ -80,7 +76,7 @@ public class CustomSqlApi {
 	public static boolean close(Connection connection){
 		if (connection != null){
 			try { connection.close(); return true; }
-			catch (SQLException e) { GCCSMain.writeErrorLogFile(e); }
+			catch (SQLException e) {  }
 		}
 		return false;
 	}
@@ -198,7 +194,7 @@ public class CustomSqlApi {
 	        stmt = connection.createStatement();
 	        ResultSet rs = stmt.executeQuery(query);
 	        while (rs.next()) {
-	        	String[] row = new String[3];
+	        	String[] row = new String[2];
 	        	row[0] = rs.getInt("id")+"";
 	        	row[1] = rs.getString("to_execute");
 	        	row[2] = rs.getString("player_username");

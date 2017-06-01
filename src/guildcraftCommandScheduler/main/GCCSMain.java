@@ -89,14 +89,17 @@ public class GCCSMain extends JavaPlugin {
 	}
 	
 	/**
-	 * Stops the plugin by disconnecting from the database and halting the
-	 * update loop
+	 * Stops the plugin by disconnecting from the database and halting the update loop
 	 */
-	private void stop(){
-		if (database != null)
+	public void stop(){
+		if (database != null){
 			database.closeConnection();
-		if (loop != null)
+			database = null;
+		}
+		if (loop != null){
 			loop.cancel();
+			loop = null;
+		}
 	}
 	
 	/**
@@ -127,9 +130,9 @@ public class GCCSMain extends JavaPlugin {
 	 * @param e
 	 */
 	public static void writeErrorLogFile(String s){
-		plugin.stop();
 		plugin.getLogger().info("An error occurred. Check the Error log file for details. Once the issue is resolved, "
 				+ "run the /gccs reload command");
+		plugin.stop();
 		String fileName = "Error log "+new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()) + ".txt";
 		File file = new File(plugin.getDataFolder() + File.separator + fileName);
 		try {
@@ -143,6 +146,13 @@ public class GCCSMain extends JavaPlugin {
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
+	}
+	
+	@Override
+	public void reloadConfig(){
+		super.reloadConfig();
+		TimeZone.setDefault(TimeZone.getTimeZone(getConfig().getString("timezone")));
+		intervalTicks = getConfig().getLong("interval")*20L;
 	}
 	
 	public static CommandDatabase getCommandDatabase(){ return plugin.database; }

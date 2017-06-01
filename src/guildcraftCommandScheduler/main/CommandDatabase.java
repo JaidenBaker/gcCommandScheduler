@@ -70,7 +70,7 @@ public class CommandDatabase {
 			}
 			bfr.close();
 		}
-		catch (IOException e) { e.printStackTrace(); }
+		catch (IOException e) { GCCSMain.writeErrorLogFile(e); }
 	}
 	
 	/**
@@ -103,6 +103,7 @@ public class CommandDatabase {
 	public void closeConnection(){
 		CustomSqlApi.close(connection);
 		plugin.getLogger().info("Connection successfully closed.");
+		connection = null;
 	}
 	
 	

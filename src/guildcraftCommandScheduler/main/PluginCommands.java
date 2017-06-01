@@ -1,5 +1,7 @@
 package guildcraftCommandScheduler.main;
 
+import java.util.TimeZone;
+
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -53,10 +55,10 @@ public class PluginCommands implements CommandExecutor {
 					if (sender.hasPermission("gccs.access")){
 						plugin.reloadConfig();
 						plugin.reloadDatabase();
-						sender.sendMessage(ChatColor.GREEN+"[GCCS] config and blacklist reloaded");
+						sender.sendMessage(ChatColor.GREEN+"[GCCommandSheduler] config and blacklist reloaded");
 					}
 					else
-						sender.sendMessage(ChatColor.RED+"[GCCS] You don't have the permissions to do that!");
+						sender.sendMessage(ChatColor.RED+"[GCCommandSheduler] You don't have the permissions to do that!");
 					break;
 					
 					
@@ -65,13 +67,13 @@ public class PluginCommands implements CommandExecutor {
 				case "u":
 					if (sender.hasPermission("gccs.access")){
 						if(cdb.executePendingCommands())
-							sender.sendMessage(ChatColor.GREEN+"[GCCS] All pending commands were executed");
+							sender.sendMessage(ChatColor.GREEN+"[GCCommandSheduler] All pending commands were executed");
 						else
-							sender.sendMessage(ChatColor.RED+"[GCCS] Error: not connected to SQL database. "
+							sender.sendMessage(ChatColor.RED+"[GCCommandSheduler] Error: not connected to SQL database. "
 									+ "Check that the config.yml file is correct and type /gccs reload");
 					}
 					else
-						sender.sendMessage(ChatColor.RED+"[GCCS] You don't have the permissions to do that!");
+						sender.sendMessage(ChatColor.RED+"[GCCommandSheduler] You don't have the permissions to do that!");
 					break;
 					
 					
@@ -81,7 +83,18 @@ public class PluginCommands implements CommandExecutor {
 					if (sender.hasPermission("gccs.access"))
 						GCCSTest.runTests(cdb, sender, cdb.getConnection(), cdb.getTable(), cdb.getServer());
 					else
-						sender.sendMessage(ChatColor.RED+"[GCCS] You don't have the permissions to do that!");
+						sender.sendMessage(ChatColor.RED+"[GCCommandSheduler] You don't have the permissions to do that!");
+					break;
+					
+					
+				case "stop":
+				case "s":
+					if (sender.hasPermission("gccs.access")){
+						plugin.stop();
+						sender.sendMessage(ChatColor.GREEN+"[GCCommandSheduler] The plugin was stopped. Use /gccs reload to re-start it.");
+					}
+					else
+						sender.sendMessage(ChatColor.RED+"[GCCommandSheduler] You don't have the permissions to do that!");
 					break;
 					
 					

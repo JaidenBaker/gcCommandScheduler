@@ -12,6 +12,7 @@ commands:
       /gccs reload - Reloads changes made to the config
       /gccs update - Immediatley runs all pending commands
       /gccs test - Test to make sure everything is working
+      /gccs stop - Stops the plugin
     gccs reload:
       aliases: [gccs r,gccs reloadconfig,gccs reloadblacklist]
       permission: gccs.access
@@ -22,8 +23,12 @@ commands:
       permission-message: You don't have the permissions to do that!
     gccs test:
       description: Run tests the plugin and server for errors
-      usage: /gccs test
       aliases: [gccs t]
+      permission: gccs.access
+      permission-message: You don't have the permissions to do that!
+    gccs stop:
+      description: Stops the plugin
+      aliases: [gccs s]
       permission: gccs.access
       permission-message: You don't have the permissions to do that!
     
