@@ -27,6 +27,7 @@ The plugin also has the following commands:
    * **/gccs about** 	Shows a brief description of the plugin, its current version and its author
    * **/gccs reload** 	Reloads the plugin, including changes made to the config and commandBlacklist files
    * **/gccs update** 	Immediately runs any pending commands on the database.
+   * **/gccs stop**  Stops the plugin. It can be started again with /gccs reload
    * **/gccs test**	runs various tests to ensure the plugin is working correctly. You won’t need this unless something goes wrong
 
 All commands except /gccs about require the gccs.access permission, which by default is only given to op.
