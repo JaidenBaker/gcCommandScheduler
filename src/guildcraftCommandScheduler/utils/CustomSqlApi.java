@@ -80,7 +80,7 @@ public class CustomSqlApi {
 	public static boolean close(Connection connection){
 		if (connection != null){
 			try { connection.close(); return true; }
-			catch (SQLException e) { e.printStackTrace(); }
+			catch (SQLException e) { GCCSMain.writeErrorLogFile(e); }
 		}
 		return false;
 	}
@@ -105,7 +105,7 @@ public class CustomSqlApi {
 	    finally {
 	        if (stmt != null) {
 	        	try { stmt.close(); }
-	        	catch (SQLException e) { e.printStackTrace(); }
+	        	catch (SQLException e) { GCCSMain.writeErrorLogFile(e); }
 	        }
 	    }
 	    return maxID;
@@ -204,12 +204,12 @@ public class CustomSqlApi {
 	        	row[2] = rs.getString("player_username");
 	        	rows.add(row);
 	        }
-	    } catch (SQLException e ) {
-	        e.printStackTrace();
-	    } finally {
+	    }
+	    catch (SQLException e ) { GCCSMain.writeErrorLogFile(e); }
+	    finally {
 	        if (stmt != null) {
 	        	try { stmt.close(); }
-	        	catch (SQLException e) { e.printStackTrace(); }
+	        	catch (SQLException e) { GCCSMain.writeErrorLogFile(e); }
 	        }
 	    }
 	    return rows;
@@ -231,12 +231,12 @@ public class CustomSqlApi {
 	        while (rs.next()) {
 	        	returnValue = true;
 	        }
-	    } catch (SQLException e ) {
-	        e.printStackTrace();
-	    } finally {
+	    }
+	    catch (SQLException e ) { GCCSMain.writeErrorLogFile(e); }
+	    finally {
 	        if (stmt != null) {
 	        	try { stmt.close(); }
-	        	catch (SQLException e) { e.printStackTrace(); }
+	        	catch (SQLException e) { GCCSMain.writeErrorLogFile(e); }
 	        }
 	    }
 	    return returnValue;
@@ -267,12 +267,12 @@ public class CustomSqlApi {
 	        		columnNames.contains("timestamp_executed") &&
 	        		columnNames.contains("which_server") &&
 	        		columnNames.contains("status");
-	    } catch (SQLException e ) {
-	        e.printStackTrace();
-	    } finally {
+	    }
+	    catch (SQLException e ) { GCCSMain.writeErrorLogFile(e); }
+	    finally {
 	        if (stmt != null) {
 	        	try { stmt.close(); }
-	        	catch (SQLException e) { e.printStackTrace(); }
+	        	catch (SQLException e) { GCCSMain.writeErrorLogFile(e); }
 	        }
 	    }
 	    return returnValue;
@@ -289,11 +289,11 @@ public class CustomSqlApi {
 	        stmt = connection.createStatement();
 	        stmt.executeUpdate(update);
 	    }
-	    catch (SQLException e ) { e.printStackTrace(); }
+	    catch (SQLException e ) { GCCSMain.writeErrorLogFile(e); }
 	    finally {
 	        if (stmt != null) {
 	        	try { stmt.close(); }
-	        	catch (SQLException e) { e.printStackTrace(); }
+	        	catch (SQLException e) { GCCSMain.writeErrorLogFile(e); }
 	        }
 	    }
 	}

@@ -7,5 +7,6 @@ password: dRtlPdjlei
 
 table: pending_commands
 server: survival
+timezone: Europe/Amsterdam
 
 interval: 15

@@ -11,8 +11,6 @@ import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
-import java.util.logging.Logger;
-
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -45,7 +43,7 @@ public class GCCSMain extends JavaPlugin {
 		plugin = this;
 		loadDefaultConfig();
 
-		TimeZone.setDefault(TimeZone.getTimeZone("Europe/Amsterdam"));
+		TimeZone.setDefault(TimeZone.getTimeZone(getConfig().getString("timezone")));
 		intervalTicks = getConfig().getLong("interval")*20L;
 		
 		reloadDatabase();
@@ -129,7 +127,10 @@ public class GCCSMain extends JavaPlugin {
 	 * @param e
 	 */
 	public static void writeErrorLogFile(String s){
-		String fileName = new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()) + ".txt";
+		plugin.stop();
+		plugin.getLogger().info("An error occurred. Check the Error log file for details. Once the issue is resolved, "
+				+ "run the /gccs reload command");
+		String fileName = "Error log "+new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()) + ".txt";
 		File file = new File(plugin.getDataFolder() + File.separator + fileName);
 		try {
 			BufferedWriter bfw = new BufferedWriter(new FileWriter(file));
@@ -139,12 +140,10 @@ public class GCCSMain extends JavaPlugin {
 			bfw.newLine();
 			bfw.write(s);
 			bfw.close();
-			getPluginLogger().info("An error has been logged in "+fileName);
 		} catch (IOException e1) {
 			e1.printStackTrace();
 		}
 	}
 	
 	public static CommandDatabase getCommandDatabase(){ return plugin.database; }
-	public static Logger getPluginLogger(){ return plugin.getLogger(); }
 }
