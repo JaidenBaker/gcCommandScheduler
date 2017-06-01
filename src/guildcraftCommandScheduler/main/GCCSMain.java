@@ -10,9 +10,9 @@ import java.io.StringWriter;
 import java.nio.file.Files;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.TimeZone;
 import java.util.logging.Logger;
 
-import org.bukkit.command.ConsoleCommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
@@ -44,14 +44,15 @@ public class GCCSMain extends JavaPlugin {
 	public void onEnable(){
 		plugin = this;
 		loadDefaultConfig();
-		
+
+		TimeZone.setDefault(TimeZone.getTimeZone("Europe/Amsterdam"));
 		intervalTicks = getConfig().getLong("interval")*20L;
 		
 		reloadDatabase();
 		
 		getCommand("gccs").setExecutor(new PluginCommands(this));
 	}
-
+	
 	@Override
 	public void onDisable(){
 		stop();

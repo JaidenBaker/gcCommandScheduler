@@ -7,6 +7,7 @@ import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.concurrent.Executors;
 import java.util.logging.Logger;
@@ -132,9 +133,9 @@ public class CustomSqlApi {
 	 * @param status
 	 */
 	public static void setStatus(Connection connection, String table, int id, String status){
-	    String update = "UPDATE "+table+" "
-	    		+ "SET status = '"+status+"', timestamp_executed = CURRENT_TIMESTAMP "
-	    		+ "WHERE id = "+id+";";
+	    String update = "UPDATE "+table
+	    		+ " SET status = '"+status+"', timestamp_executed = " +(new Date().getTime()/1000)
+	    		+ " WHERE id = "+id+";";
 	    executeUpdate(connection, update);
 	}
 	
@@ -149,7 +150,7 @@ public class CustomSqlApi {
 				+ "'"+command + "', "
 				+ "'"+sender + "', "
 				+ "'"+server + "', "
-				+ "CURRENT_TIMESTAMP, "
+				+ (new Date().getTime()/1000)+", "
 				+ (isPending ? "'pending'":"'executed'")
 				+ ");";
 	    executeUpdate(connection, update);
@@ -164,8 +165,8 @@ public class CustomSqlApi {
 	    String update = "CREATE TABLE "+name+" ("
 	    		+ "id int,"
 	    		+ "to_execute varchar(1023),"
-	    		+ "player_username varchar(255),"
-	    		+ "which_server varchar(255),"
+	    		+ "player_username int(10),"
+	    		+ "which_server int(10),"
 	    		+ "timestamp_created varchar(127),"
 	    		+ "timestamp_executed varchar(127),"
 	    		+ "status varchar(255));";
