@@ -1,0 +1,13 @@
+host: 
+port: 3306
+
+database: 
+username: 
+password: 
+
+table: 
+server: 
+
+timezone: Europe/Amsterdam
+
+interval: 15
