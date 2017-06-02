@@ -39,7 +39,7 @@ public class CustomSqlApi {
 			
 			try {
 				try { Class.forName(driver).newInstance(); }
-				catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) { e.printStackTrace(); }
+				catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) { GCCSMain.writeErrorLogFile(e); }
 				
 				String url = "jdbc:mysql://"+host+":"+port+"/"+databaseName;
 				
@@ -97,7 +97,7 @@ public class CustomSqlApi {
 	        while (rs.next())
 	        	maxID = rs.getInt("id");
 	    }
-	    catch (SQLException e ) { e.printStackTrace(); }
+	    catch (SQLException e ) { GCCSMain.writeErrorLogFile(e); }
 	    finally {
 	        if (stmt != null) {
 	        	try { stmt.close(); }
@@ -194,7 +194,7 @@ public class CustomSqlApi {
 	        stmt = connection.createStatement();
 	        ResultSet rs = stmt.executeQuery(query);
 	        while (rs.next()) {
-	        	String[] row = new String[2];
+	        	String[] row = new String[3];
 	        	row[0] = rs.getInt("id")+"";
 	        	row[1] = rs.getString("to_execute");
 	        	row[2] = rs.getString("player_username");

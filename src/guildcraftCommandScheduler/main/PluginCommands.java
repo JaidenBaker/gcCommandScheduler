@@ -1,7 +1,5 @@
 package guildcraftCommandScheduler.main;
 
-import java.util.TimeZone;
-
 import org.bukkit.ChatColor;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandExecutor;
@@ -16,6 +14,7 @@ import guildcraftCommandScheduler.testing.GCCSTest;
  * gccs about
  * gccs reload
  * gccs update
+ * gccs stop
  * gccs test
  * See the plugin.yml for more details
  * @author Jonodonozym
@@ -66,7 +65,9 @@ public class PluginCommands implements CommandExecutor {
 				case "update":
 				case "u":
 					if (sender.hasPermission("gccs.access")){
-						if(cdb.executePendingCommands())
+						if (cdb == null)
+								sender.sendMessage(ChatColor.RED+"[GCCommandSheduler] Error: gccs has been stopped. Type /gccs restart to start it again");
+						else if(cdb.executePendingCommands())
 							sender.sendMessage(ChatColor.GREEN+"[GCCommandSheduler] All pending commands were executed");
 						else
 							sender.sendMessage(ChatColor.RED+"[GCCommandSheduler] Error: not connected to SQL database. "
@@ -81,10 +82,14 @@ public class PluginCommands implements CommandExecutor {
 				case "test":
 				case "t":
 					if (sender.hasPermission("gccs.access"))
-						GCCSTest.runTests(cdb, sender, cdb.getConnection(), cdb.getTable(), cdb.getServer());
+						if (cdb == null)
+							sender.sendMessage(ChatColor.RED+"[GCCommandSheduler] Error: gccs has been stopped. Type /gccs restart to start it again");
+						else
+							GCCSTest.runTests(cdb, sender, cdb.getConnection(), cdb.getTable(), cdb.getServer());
 					else
 						sender.sendMessage(ChatColor.RED+"[GCCommandSheduler] You don't have the permissions to do that!");
 					break;
+					
 					
 					
 				case "stop":

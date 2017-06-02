@@ -7,7 +7,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import guildcraftCommandScheduler.main.CommandDatabase;
-import guildcraftCommandScheduler.main.GCCSMain;
 import guildcraftCommandScheduler.utils.CustomSqlApi;
 
 /**
@@ -37,7 +36,7 @@ public class GCCSTest {
 		if (sender instanceof Player)
 			sender.sendMessage(ChatColor.GRAY+"[GCCommandSheduler] Testing valid commands. 2 messages saying 'command recieved' should pop up.");
 		else
-			GCCSMain.getPluginLogger().info("Now testing valid commands. 2 messages saying 'command run from SQL server' should pop up.");
+			sender.sendMessage("[GCCommandSheduler] Now testing valid commands. 2 messages saying 'command run from SQL server' should pop up.");
 
 		CustomSqlApi.addCommand(connection, table, "tell "+sender.getName()+" First server command recieved!", server, sender.getName(), true);
 		database.executePendingCommands();
