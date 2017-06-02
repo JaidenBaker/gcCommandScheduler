@@ -43,8 +43,6 @@ public class GCCSMain extends JavaPlugin {
 		plugin = this;
 		loadDefaultConfig();
 
-		TimeZone.setDefault(TimeZone.getTimeZone(getConfig().getString("timezone")));
-		intervalTicks = getConfig().getLong("interval")*20L;
 		
 		reloadDatabase();
 		
@@ -84,8 +82,10 @@ public class GCCSMain extends JavaPlugin {
 		if(!file.exists()){
 			InputStream link = (getClass().getResourceAsStream("/commandBlacklist.txt"));
 		    try { Files.copy(link, file.getAbsoluteFile().toPath()); }
-		    catch (IOException e) { getLogger().info("Error loading default blacklist: "+e); }
+		    catch (IOException e) { writeErrorLogFile(e);; }
 		}
+		
+		reloadConfig();
 	}
 	
 	/**

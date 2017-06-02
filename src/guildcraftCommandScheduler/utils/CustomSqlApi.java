@@ -34,7 +34,7 @@ public class CustomSqlApi {
 	public static Connection open(Logger logger, String host, int port, String databaseName, String username, String password){
 		numFails = 0;
 		
-		while (numFails <= maxFails){
+		while (numFails < maxFails){
 			
 			
 			try {

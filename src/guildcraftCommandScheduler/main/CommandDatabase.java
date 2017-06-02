@@ -50,7 +50,7 @@ public class CommandDatabase {
         dbPassword = configFile.getString("password");
 		dbTable = configFile.getString("table"); 
 		server = configFile.getString("server");
-		
+
 		// load the blacklist file
 		commandBlacklist = new HashSet<String>();
 		commandBlacklist.add("gccs"); //to prevent infinite loops when calling 'gccs update' through the sql database
@@ -78,6 +78,9 @@ public class CommandDatabase {
 	 * @return true if successful
 	 */
 	public boolean openConnection(){
+		if(!checkConfigValid())
+			return false;
+			
 		if (connection != null){
 			plugin.getLogger().info("Closing existing connection...");
 			closeConnection();
@@ -152,6 +155,19 @@ public class CommandDatabase {
 			if (command.startsWith(s+" ") || command.equals(s))
 				return true;
 		return false;
+	}
+	
+	/**
+	 * Checks that the config.yml file is filled in
+	 * @return true if filled in, false otherwise
+	 */
+	private boolean checkConfigValid(){
+		if (host == null || dbName == null || dbUsername == null || dbPassword == null || dbTable == null || server == null){
+			plugin.getLogger().info("[GCCommandScheduler] Blank lines found in the config.yml plugin. "
+					+ "Please fill in the config.yml plugin then type /gccs reload");
+			return false;
+		}
+		return true;
 	}
 	
 	// getters, setters and checkers
