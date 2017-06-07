@@ -15,6 +15,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
+import com.mysql.jdbc.exceptions.MySQLTimeoutException;
+
 /**
  * Main class for the GuildCraft Command Scheduler plugin (GCCS)
  * 
@@ -58,14 +60,19 @@ public class GCCSMain extends JavaPlugin {
 	 * Re-loads the database and re-connects to the SQL server
 	 * Includes any changes made to the config and blacklist files
 	 */
-	public boolean reloadDatabase(){
+	public void reloadDatabase(){
 		stop();
 		database = new CommandDatabase(this);
-		if (database.openConnection()){
-			loop = startLoopTask(database);
-			return true;
-		}
-		return false;
+		
+		Thread connectionThread = new Thread(){
+			@Override public void run() {
+				if (database.openConnection()){
+					loop = startLoopTask(database);
+				}
+			}
+		};
+		
+		connectionThread.run();
 	}
 	
 	/**

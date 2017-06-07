@@ -41,11 +41,12 @@ public class CustomSqlApi {
 				try { Class.forName(driver).newInstance(); }
 				catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) { GCCSMain.writeErrorLogFile(e); }
 				
-				String url = "jdbc:mysql://"+host+":"+port+"/"+databaseName;
+				String url = "jdbc:mysql://"+host+":"+port+"/"+databaseName+"?user="+username+"&password="+password+
+						"&loginTimeout=10&socketTimeout=10";
 				
 				logger.info("Attempting to connect to the SQL server at the host "+host);
 				Connection connection = DriverManager.getConnection(url,username,password);
-				connection.setNetworkTimeout(Executors.newFixedThreadPool(2), 5000);
+				connection.setNetworkTimeout(Executors.newFixedThreadPool(2), 15000);
 				logger.info("Successfully connected to the "+databaseName+" database at the host "+host);
 				
 				return connection;
