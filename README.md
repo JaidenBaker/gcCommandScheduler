@@ -6,8 +6,9 @@ Just drop the builds/GCCommandScheduler.jar file in your server’s plugin folde
 ## Overview ##
 This Minecraft plugin is designed to connect to a MySQL database and run commands from the database at a regular interval. The MySQL database must have the following columns:
 
-| id | to_execute | player_username | which_server | timestamp_created | timestamp_executed | status |
-|----|------------|-----------------|--------------|-------------------|--------------------|--------|
+|**Name**| id | to_execute | player_username | which_server | timestamp_created | timestamp_executed | status |
+|--------|----|------------|-----------------|--------------|-------------------|--------------------|--------|
+|**Type**|int |   varchar  |  varchar        |  varchar     |  int              |  int               | varchar|
 
 The plugin will automatically create a table if one is not found matching the name in the config.yml file.
 
