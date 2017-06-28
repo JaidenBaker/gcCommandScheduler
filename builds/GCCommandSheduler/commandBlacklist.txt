@@ -1,9 +1,0 @@
-# Blacklist commands in this file
-#	E.g.
-#	-> '/op' will disable running the /op command
-#
-#	-> '/op jonodonozym' will disable the '/op' command only if it has 'jonodonozym' as an argument.
-#		other arguments like '/op potato' will still work.
-
-
-/op
