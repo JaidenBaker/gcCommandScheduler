@@ -85,6 +85,7 @@ public class CommandDatabase {
 			plugin.getLogger().info("Closing existing connection...");
 			closeConnection();
 		}
+		
 		connection = CustomSqlApi.open(plugin.getLogger(), host, port, dbName, dbUsername, dbPassword);
 		
 		if (connection == null)

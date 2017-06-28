@@ -48,6 +48,7 @@ public class PluginCommands implements CommandExecutor {
 					
 
 				case "reload":
+				case "restart":
 				case "reloadconfig":
 				case "reloadblacklist":
 				case "r":
@@ -66,7 +67,7 @@ public class PluginCommands implements CommandExecutor {
 				case "u":
 					if (sender.hasPermission("gccs.access")){
 						if (cdb == null)
-								sender.sendMessage(ChatColor.RED+"[GCCommandSheduler] Error: gccs has been stopped. Type /gccs restart to start it again");
+								sender.sendMessage(ChatColor.RED+"[GCCommandSheduler] Error: gccs has been stopped. Type /gccs reload to start it again");
 						else if(cdb.executePendingCommands())
 							sender.sendMessage(ChatColor.GREEN+"[GCCommandSheduler] All pending commands were executed");
 						else
@@ -83,7 +84,7 @@ public class PluginCommands implements CommandExecutor {
 				case "t":
 					if (sender.hasPermission("gccs.access"))
 						if (cdb == null)
-							sender.sendMessage(ChatColor.RED+"[GCCommandSheduler] Error: gccs has been stopped. Type /gccs restart to start it again");
+							sender.sendMessage(ChatColor.RED+"[GCCommandSheduler] Error: gccs has been stopped. Type /gccs reload to start it again");
 						else
 							GCCSTest.runTests(cdb, sender, cdb.getConnection(), cdb.getTable(), cdb.getServer());
 					else

@@ -161,11 +161,11 @@ public class CustomSqlApi {
 	public static void createTable(Connection connection, String name){
 	    String update = "CREATE TABLE "+name+" ("
 	    		+ "id int,"
-	    		+ "to_execute varchar(1023),"
-	    		+ "player_username int(10),"
-	    		+ "which_server int(10),"
-	    		+ "timestamp_created varchar(127),"
-	    		+ "timestamp_executed varchar(127),"
+	    		+ "to_execute varchar(2047),"
+	    		+ "player_username varchar(63),"
+	    		+ "which_server varchar(63),"
+	    		+ "timestamp_created int(31),"
+	    		+ "timestamp_executed int(31),"
 	    		+ "status varchar(255));";
 	    executeUpdate(connection, update);
 	}

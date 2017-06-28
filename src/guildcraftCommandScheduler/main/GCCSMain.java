@@ -8,6 +8,7 @@ import java.io.InputStream;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.nio.file.Files;
+import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.TimeZone;
@@ -15,7 +16,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scheduler.BukkitTask;
 
-import com.mysql.jdbc.exceptions.MySQLTimeoutException;
+import com.mysql.jdbc.exceptions.jdbc4.CommunicationsException;
+import com.mysql.jdbc.exceptions.jdbc4.MySQLNonTransientConnectionException;
 
 /**
  * Main class for the GuildCraft Command Scheduler plugin (GCCS)
@@ -45,7 +47,6 @@ public class GCCSMain extends JavaPlugin {
 		plugin = this;
 		loadDefaultConfig();
 
-		
 		reloadDatabase();
 		
 		getCommand("gccs").setExecutor(new PluginCommands(this));
@@ -92,6 +93,11 @@ public class GCCSMain extends JavaPlugin {
 		    catch (IOException e) { writeErrorLogFile(e);; }
 		}
 		
+		// creates Log folder if one doesn't exist
+		file = new File(getDataFolder() + File.separator + "Logs");
+		if (!file.exists())
+			file.mkdir();
+		
 		reloadConfig();
 	}
 	
@@ -126,32 +132,37 @@ public class GCCSMain extends JavaPlugin {
 	}
 	
 
+	/**
+	 * Writes an error log to a file, given an exception
+	 * @param e
+	 */
 	public static void writeErrorLogFile(Exception e){
 		StringWriter sw = new StringWriter();
 		e.printStackTrace(new PrintWriter(sw));
 		String exceptionAsString = sw.toString();
 		writeErrorLogFile(exceptionAsString);
 	}
+	
 	/**
-	 * Writes an error log to a file, given an exception
+	 * Writes an message to an error log file
 	 * @param e
 	 */
 	public static void writeErrorLogFile(String s){
 		plugin.getLogger().info("An error occurred. Check the Error log file for details. Once the issue is resolved, "
 				+ "run the /gccs reload command");
 		plugin.stop();
-		String fileName = "Error log "+new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss").format(new Date()) + ".txt";
+		String fileName = "Logs"+File.separator+"Error "+new SimpleDateFormat("yyyy.MM.dd.HH.mm.ss.SSS").format(new Date()) + ".txt";
 		File file = new File(plugin.getDataFolder() + File.separator + fileName);
 		try {
 			BufferedWriter bfw = new BufferedWriter(new FileWriter(file));
-			bfw.write("An error occurred in the GCCS plugin. If you can't work out the issue\n"
+			bfw.write("An error occurred in the GCCS plugin. If you can't work out the issue "
 					+ "from this file, send this file to the plugin developer.");
 			bfw.newLine();
 			bfw.newLine();
 			bfw.write(s);
 			bfw.close();
-		} catch (IOException e1) {
-			e1.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	

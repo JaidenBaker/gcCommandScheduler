@@ -1,12 +1,14 @@
 package guildcraftCommandScheduler.testing;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import org.bukkit.ChatColor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import guildcraftCommandScheduler.main.CommandDatabase;
+import guildcraftCommandScheduler.main.GCCSMain;
 import guildcraftCommandScheduler.utils.CustomSqlApi;
 
 /**
@@ -90,9 +92,9 @@ public class GCCSTest {
 	 * Creates a test table and ensures that the required columns are present
 	 */
 	private static void testTableCreation(Connection connection, CommandSender sender){
-		CustomSqlApi.createTable(connection, "test_table");
-		if (!CustomSqlApi.checkColumns(connection, "test_table"))
+		CustomSqlApi.createTable(connection, "test_table_kankjgbklajbnsdlknlk");
+		if (!CustomSqlApi.checkColumns(connection, "test_table_kankjgbklajbnsdlknlk"))
 				sender.sendMessage(ChatColor.RED+"[GCCommandSheduler] Test table doesn't have the right columns! Contact the developer to fix this issue!");
-		CustomSqlApi.dropTable(connection, "test_table");
+		CustomSqlApi.dropTable(connection, "test_table_kankjgbklajbnsdlknlk");
 	}
 }
