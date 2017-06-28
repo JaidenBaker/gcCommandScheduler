@@ -1,7 +1,7 @@
 # GuildCraft Command Scheduler Documentation #
 
 ## Installation ##
-Just drop the builds/GCCommandScheduler.jar file in your server’s plugin folder. You’ll also want to set up a MySQL database, run the plugin once to generate the config.yml file, fill it in and then run the /gccs reload command or restart the server (read on for specifics)
+Just drop contents of the builds folder into your server’s plugin folder. You’ll also want to set up a MySQL database and modify the config.yml file to point to that database, which is found under the GCCommandScheduler folder. You can either create your own table (Following the format mentioned later) in the database or run the plugin once and make it create the table for you.
 
 ## Overview ##
 This Minecraft plugin is designed to connect to a MySQL database and run commands from the database at a regular interval. The MySQL database must have the following columns:
@@ -12,7 +12,7 @@ This Minecraft plugin is designed to connect to a MySQL database and run command
 
 The plugin will automatically create a table if one is not found matching the name in the config.yml file.
 
-The plugin checks the database at a regular interval, and gets all rows from the database that have a status of “pending” and a which_server that matches the plugin’s target server. It then checks that the player specified in player_username is either online or is the console. If so, the plugin runs the Minecraft command in to_execute, updates the timestamp_executed value to the plugin’s current time and sets the status to “executed”.
+The plugin checks the database at a regular interval, and gets all rows from the database that have a status of “pending” and a which_server that matches the plugin’s target server written in the config.yml file. It then checks that the player specified in player_username is either online or is the console. If so, the plugin runs the Minecraft command in to_execute, updates the timestamp_executed value to the plugin’s current time and sets the status to “executed”.
 
 ## Configuration ##
 The plugin comes with a config.yml file under the GCCommandScheduler folder where you can change:
@@ -38,6 +38,6 @@ All commands except /gccs about require the gccs.access permission, which by def
 ## Error Handling ##
 If the plugin runs into an error, it will say that it ran into an error on the server’s console and stop running. It will then write the error to a log file in the plugin’s directory.
 
-If the file contains something like “connection link error”, then it could not connect to the database. Check that the database settings are correct in the config file and that the database exists. If you run into a different SQL error, make sure that your database has the correct columns mentioned at the start of this document. A good way to do this is to enter a new name for the table name in the config.yml and let the plugin generate the table.
+If the file contains something like “connection link error”, then it could not connect to the database. Check that the database settings are correct in the config file and that the database exists. If you run into a different SQL error, make sure that your database has the correct columns mentioned at the start of this document.
 
 Once you have resolved the issue, run the /gccs reload command to restart the plugin. If you still cannot resolve the issue after this, contact Jonodonozym, the plugin developer at jonodonozymdev@gmail.com or through other means like Discord.
