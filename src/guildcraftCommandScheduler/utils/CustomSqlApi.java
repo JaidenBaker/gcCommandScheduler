@@ -42,7 +42,7 @@ public class CustomSqlApi {
 				catch (InstantiationException | IllegalAccessException | ClassNotFoundException e) { GCCSMain.writeErrorLogFile(e); }
 				
 				String url = "jdbc:mysql://"+host+":"+port+"/"+databaseName+"?user="+username+"&password="+password+
-						"&loginTimeout=10&socketTimeout=10";
+						"&loginTimeout=1000&socketTimeout=1000";
 				
 				logger.info("Attempting to connect to the SQL server at the host "+host);
 				Connection connection = DriverManager.getConnection(url,username,password);
