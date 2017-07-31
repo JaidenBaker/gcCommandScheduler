@@ -127,7 +127,7 @@ public class GCCSMain extends JavaPlugin {
 				public void run() {
 					database.executePendingCommands();
 				}
-			}.runTaskTimer(this, 0, intervalTicks);
+			}.runTaskTimerAsynchronously(this, 0, intervalTicks);
 		return null;
 	}
 	
